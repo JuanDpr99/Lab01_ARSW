@@ -13,11 +13,15 @@ import java.util.List;
  */
 public class Main {
     
-    public static void main(String a[]){
-        HostBlackListsValidator hblv=new HostBlackListsValidator();
-        List<Integer> blackListOcurrences=hblv.checkHost("200.24.34.55");
-        System.out.println("The host was found in the following blacklists:"+blackListOcurrences);
+    public static void main(String[] args) {
+
+        // Número de hilos que se usarán en la búsqueda.
+        int numberOfThreads = 10; 
+
+        HostBlackListsValidator hblv = new HostBlackListsValidator();
         
+        List<Integer> blackListOccurrences = hblv.checkHost("200.24.34.55", numberOfThreads);
+        System.out.println("The host was found in the following blacklists: " + blackListOccurrences);
     }
     
 }
