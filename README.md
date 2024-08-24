@@ -74,6 +74,9 @@ Teóricamente, la Ley de Amdahl se aplica mejor aquí porque cada máquina ejecu
 Usar c hilos en 100/c máquinas distribuidas:
 Si se optimiza bien la ejecución paralela dentro de cada máquina y se minimizan las sobrecargas de sincronización, es probable que se obtenga una mejora en el rendimiento. Sin embargo, como en el primer escenario, la eficiencia de la comunicación entre máquinas sigue siendo un factor crucial.
 
-
+## Autores
+- **Juan Daniel Murcia Sánchez**
+- **Juan David Parroquiano Roldán**
+- **Andrés Felipe Montes Ortiz**
 
 
