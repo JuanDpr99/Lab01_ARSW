@@ -20,7 +20,8 @@ public class HostBlackListsValidator {
 
     private static final int BLACK_LIST_ALARM_COUNT=5;
     private static final Logger LOG = Logger.getLogger(HostBlackListsValidator.class.getName());
-
+    List<Integer> blackListOccurrences = new ArrayList<>();
+    int totalOccurrences = 0;
     
     /**
      * Check the given host's IP address in all the available black lists,
@@ -48,25 +49,29 @@ public class HostBlackListsValidator {
                 endRange += remainder;
             }
     
-            HostBlackListSearchThread thread = new HostBlackListSearchThread(ipaddress, startRange, endRange);
+            //Declaración de hilos
+            HostBlackListSearchThread thread = new HostBlackListSearchThread(ipaddress, startRange, endRange, this);
+
+            //Adicion de hilo al arreglo
             threads.add(thread);
+
+            //Inicio de Hilo
             thread.start();
     
             startRange = endRange + 1;
         }
-    
-        List<Integer> blackListOccurrences = new ArrayList<>();
-        int totalOccurrences = 0;
-    
+           
+        
+        //Recorrido de Hilos
         for (HostBlackListSearchThread thread : threads) {
             try {
-                thread.join();
-                totalOccurrences += thread.getOccurrencesCount();
+                thread.join(); //Todos los hilos se unen (join), y los resultados se recopilan y se procesan como antes.
+                /*totalOccurrences += thread.getOccurrencesCount();
                 blackListOccurrences.addAll(thread.getBlackListOccurrences());
     
                 if (totalOccurrences >= BLACK_LIST_ALARM_COUNT) {
                     break;
-                }
+                }*/
             } catch (InterruptedException e) {
                 LOG.log(Level.SEVERE, "Thread was interrupted", e);
             }
@@ -84,6 +89,16 @@ public class HostBlackListsValidator {
         }
     
         return blackListOccurrences;
+    }
+
+    // Método sincronizado para actualizar las ocurrencias y detener los hilos si es necesario
+    public synchronized boolean reportOccurrence(int blacklistIndex) {
+        if (totalOccurrences < BLACK_LIST_ALARM_COUNT) {
+            blackListOccurrences.add(blacklistIndex);
+            totalOccurrences++;
+            return totalOccurrences >= BLACK_LIST_ALARM_COUNT;
+        }
+        return true; // Si ya se alcanzó el límite, retorna true para indicar que se debe detener la búsqueda
     }
     
 }
